@@ -1,5 +1,5 @@
 # filename: ai_regex_quiz__temp_0.5.py
-# Updated the regular expression to handle underscores and hyphens accurately.
+# Refined the approach to validate API keys accurately.
 import re
 
 def is_valid_api_key(api_key: str) -> bool:
@@ -12,12 +12,13 @@ def is_valid_api_key(api_key: str) -> bool:
     - Can contain hyphens but should not have consecutive hyphens (except in specific cases).
     - Should be at least 20 characters long.
     """
-    if not api_key.startswith("sk-"):
-        return False
-    if api_key.startswith("SK-"):
-        return False
+    # Check length
     if len(api_key) < 20:
         return False
+    # Check start
+    if not api_key.startswith("sk-") or api_key.startswith("SK-"):
+        return False
+    # Check invalid characters
     if "%" in api_key:
         return False
     # Check for invalid consecutive hyphens not at the start or end
