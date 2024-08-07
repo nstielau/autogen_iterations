@@ -1,5 +1,5 @@
 # filename:ai_regex_quiz__temp_0.95.py
-# Fixed: Split on double hyphens and added context-based validation.
+# Fixed: Refined and explicitly validated contexts of allowed double hyphens.
 
 """
 Function to validate API key based on specific criteria.
@@ -17,31 +17,28 @@ import re
 def is_valid_api_key(api_key):
     if not isinstance(api_key, str) or len(api_key) < 30:
         return False
-
     if not api_key.startswith("sk-"):
         return False
-    
     if re.search(r'[^a-zA-Z0-9\-_]', api_key):
         return False
-    
-    # Split by double hyphens
-    parts = api_key.split('--')
 
-    # No more than one double hyphen instance unless it starts with "sk--"
-    if len(parts) > 2:
-        return False
-    
-    for i, part in enumerate(parts):
-        if i == 0:
-            # Check for valid start "sk-"
-            if not re.match(r'^sk-[a-zA-Z0-9\-_]*$', part):
-                return False
-        else:
-            # Check for valid contextually "gen-" and valid characters
-            if i == 1 and not (api_key.startswith("sk--") or re.search(r'-gen-', part)):
-                return False
-            if not re.match(r'^[a-zA-Z0-9\-_]*$', part):
-                return False
+    # Check allowed patterns explicitly
+    if '--' in api_key:
+        parts = api_key.split('--')
+        if len(parts) > 2:
+            return False
+
+        for i, part in enumerate(parts):
+            if i == 0:
+                if not re.match(r'^sk-[a-zA-Z0-9\-_]*$', part):
+                    return False
+            else:
+                if not (re.match(r'^[a-zA-Z0-9\-_]*$', part) and 
+                        (api_key.startswith("sk--") or '-gen-' in part)):
+                    return False
+    else:
+        if not re.match(r'^sk-[a-zA-Z0-9\-_]*$', api_key):
+            return False
 
     return True
 
