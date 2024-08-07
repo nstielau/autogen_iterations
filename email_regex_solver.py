@@ -1,5 +1,5 @@
 # filename:email_regex_solver.py
-# Updated the regex pattern to handle domain parts not starting or ending with hyphens and to check for moderately long TLDs.
+# Added a check for the presence of the '@' symbol before splitting the email.
 
 import re
 import unittest
@@ -8,14 +8,14 @@ def is_valid_email(email):
     """
     Checks if the given email is valid according to the following rules:
     1. Should contain exactly one '@' symbol.
-    2. The domain and subdomain must start with a letter or a digit.
-    3. Domain name and subdomain name may contain only letters, digits, hyphens and periods.
-    4. Domain name should be at least two characters long.
-    5. No consecutive periods in the domain.
-    6. No periods or hyphens at the beginning or end of domain or subdomain parts.
-    7. Should not allow underscores or any other invalid characters in the domain or subdomain.
-    8. Should not allow top-level domains (TLDs) that are less than two characters.
-       Also, avoid unusually long TLDs (e.g., longer than 10 characters to handle original case).
+    2. The local part may contain letters, digits, underscores, periods, and hyphens.
+    3. The domain and subdomain must start with a letter or a digit.
+    4. Domain name and subdomain name may contain only letters, digits, hyphens and periods.
+    5. Domain name should be at least two characters long.
+    6. No consecutive periods in the domain.
+    7. No periods or hyphens at the beginning or end of domain or subdomain parts.
+    8. Should not allow underscores or any other invalid characters in the domain or subdomain.
+    9. Should not allow top-level domains (TLDs) that are less than two characters or unusually long (more than 10 characters).
     
     Args:
         email (str): The email address to validate.
@@ -23,13 +23,20 @@ def is_valid_email(email):
     Returns:
         bool: True if the email is valid, False otherwise.
     """
+    if '@' not in email or email.count('@') != 1:
+        return False
+
     email_regex = re.compile(
-        r'^(?!.*\.\.)(?!.*\.$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,10}$',
+        r'^(?!.*\.\.)(?!.*\.$)[\w\-.+]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,10}$',
         re.IGNORECASE
     )
+    
+    local_part, domain_part = email.rsplit('@', 1)
+
     # Ensuring domain parts do not start or end with a hyphen.
-    if any(part.startswith('-') or part.endswith('-') for part in email.split('@')[1].split('.')):
+    if any(part.startswith('-') or part.endswith('-') for part in domain_part.split('.')):
         return False
+    
     return re.match(email_regex, email) is not None
 
 class TestEmailValidation(unittest.TestCase):
