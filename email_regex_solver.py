@@ -1,5 +1,5 @@
 # filename:email_regex_solver.py
-# Added function is_valid_email() to validate email addresses based on predefined rules.
+# Updated the regex pattern to handle domain parts not starting or ending with hyphens and to check for moderately long TLDs.
 
 import re
 import unittest
@@ -15,6 +15,7 @@ def is_valid_email(email):
     6. No periods or hyphens at the beginning or end of domain or subdomain parts.
     7. Should not allow underscores or any other invalid characters in the domain or subdomain.
     8. Should not allow top-level domains (TLDs) that are less than two characters.
+       Also, avoid unusually long TLDs (e.g., longer than 10 characters to handle original case).
     
     Args:
         email (str): The email address to validate.
@@ -23,9 +24,12 @@ def is_valid_email(email):
         bool: True if the email is valid, False otherwise.
     """
     email_regex = re.compile(
-        r'^(?!.*\.\.)(?!.*\.$)[\w\-.+]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]{2,}$',
+        r'^(?!.*\.\.)(?!.*\.$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,10}$',
         re.IGNORECASE
     )
+    # Ensuring domain parts do not start or end with a hyphen.
+    if any(part.startswith('-') or part.endswith('-') for part in email.split('@')[1].split('.')):
+        return False
     return re.match(email_regex, email) is not None
 
 class TestEmailValidation(unittest.TestCase):
