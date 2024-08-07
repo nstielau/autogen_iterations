@@ -1,13 +1,12 @@
 # filename:ai_regex_quiz__temp_0.py
-# Updated to disallow consecutive hyphens in the API key
+# Updated to allow consecutive hyphens in the API key
 
 """
 This function validates an API key based on the following rules:
 1. The key must start with "sk-".
 2. The key can contain alphanumeric characters, hyphens, and underscores.
-3. The key should not contain consecutive hyphens.
-4. The key should not end with a hyphen.
-5. The key should be of a certain length (not too short).
+3. The key should not end with a hyphen.
+4. The key should be of a certain length (not too short).
 """
 
 import re
@@ -15,10 +14,6 @@ import re
 def is_valid_api_key(api_key):
     # Check if the key starts with "sk-"
     if not api_key.startswith("sk-"):
-        return False
-    
-    # Check for consecutive hyphens
-    if "--" in api_key:
         return False
     
     # Check if the key ends with a hyphen
