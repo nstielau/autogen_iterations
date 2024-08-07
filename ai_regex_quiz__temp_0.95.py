@@ -1,5 +1,5 @@
 # filename:ai_regex_quiz__temp_0.95.py
-# Fixed: Combined validation logic to handle specific cases more accurately.
+# Fixed: Refined pattern matching logic and separated double hyphen handling for better clarity.
 
 """
 Function to validate API key based on specific criteria.
@@ -21,27 +21,25 @@ def is_valid_api_key(api_key):
         return False
     if re.search(r'[^a-zA-Z0-9\-_]', api_key):
         return False
-
-    # Split on double hyphens
-    parts = api_key.split('--')
-
-    # Check that we don't have more than one double-hyphen split
-    if len(parts) > 2:
-        return False
     
-    # Check each part individually
-    for i, part in enumerate(parts):
-        if i == 0:
-            if not re.match(r'^sk-[a-zA-Z0-9\-_]*$', part):
-                return False
-        else:
-            if "-gen-" in part:
-                before_gen, after_gen = part.split('-gen-', 1)
-                if not (re.match(r'^[a-zA-Z0-9\-_]*$', before_gen) and re.match(r'^[a-zA-Z0-9\-_]*$', after_gen)):
-                    return False
-            else:
-                if not re.match(r'^[a-zA-Z0-9\-_]*$', part):
-                    return False
+    # Handle allowed double hyphens
+    if "--" in api_key:
+        if not (api_key.startswith("sk--") or "--gen-" in api_key):
+            return False
+
+    # Ensure correct positioning using regex
+    if api_key.startswith("sk--"):
+        if not re.match(r'^sk--[a-zA-Z0-9\-_]+$', api_key):
+            return False
+    elif "--gen-" in api_key:
+        # Split by the valid "--gen-" part and check each segment
+        parts = api_key.split("--gen-")
+        if len(parts) != 2 or not all(re.match(r'^[a-zA-Z0-9\-_]+$', part) for part in parts):
+            return False
+    else:
+        if "--" in api_key:  # Any other double hyphen not in allowed positions is invalid
+            return False
+    
     return True
 
 import time

@@ -44,6 +44,5 @@ Iterestingly, it s
 
 Temperature was set a 0, and it was struggling to come up with a solution.  When I bumped the temperature to 0.95, it came up with a solution on the first iteration.
 
-Subsequent testing did not show as direct an impact of temperature.
+After that, I created temperature-specific files, using the git history as the log.  However, subsequent testing did not show as direct an impact of temperature.
 
-After that, I created temperature-specific files, using the git history as the log.
