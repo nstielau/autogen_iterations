@@ -1,5 +1,5 @@
 # filename: ai_regex_quiz__temp_0.5.py
-# Refined the approach to validate API keys accurately.
+
 import re
 
 def is_valid_api_key(api_key: str) -> bool:
@@ -25,7 +25,7 @@ def is_valid_api_key(api_key: str) -> bool:
     if re.search(r'[^-]--[^-]', api_key):
         return False
     # Check for valid pattern allowing double hyphens in specific segments
-    pattern = re.compile(r'^sk(-[a-zA-Z0-9_]+)+(-[a-zA-Z0-9_]+)*$')
+    pattern = re.compile(r'^sk(-[a-zA-Z0-9_]+)+$')
     return bool(pattern.match(api_key))
 
 def test_is_valid_api_key():
