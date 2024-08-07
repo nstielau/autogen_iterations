@@ -1,5 +1,5 @@
 # filename:ai_regex_quiz__temp_0.95.py
-# Fixed: Improved regex pattern to validate double hyphen positions accurately.
+# Fixed: Split the regex into manageable checks to handle valid placements of double hyphens.
 
 """
 Function to validate API key based on specific criteria.
@@ -22,12 +22,25 @@ def is_valid_api_key(api_key):
     if re.search(r'[^a-zA-Z0-9\-_]', api_key):
         return False
     
-    # Define regex pattern
-    pattern = r'^sk-[a-zA-Z0-9-_]*(?<!-)\-\-(?<!gen)[a-zA-Z0-9-_]*$|^sk-[a-zA-Z0-9-_]*$'
+    # Handle double hyphens "--"
+    if '--' in api_key:
+        # It must be handled in contexts: "sk--" and within "-gen-"
+        if not api_key.startswith("sk--") and "--gen-" not in api_key:
+            return False
+        # Ensure the double hyphens are correctly positioned
+        if api_key.startswith("sk--"):
+            parts = api_key.split("--", 1)
+            if not re.match(r'^[a-zA-Z0-9\-_]*$', parts[1]):
+                return False
+        if "--gen-" in api_key:
+            parts = api_key.split("--gen-", 1)
+            if not re.match(r'^[a-zA-Z0-9\-_]*$', parts[0]) or not re.match(r'^[a-zA-Z0-9\-_]*$', parts[1]):
+                return False
+    else:
+        # If there's no double hyphen, ensure it's valid
+        if not re.match(r'^sk-[a-zA-Z0-9\-_]*$', api_key):
+            return False
 
-    if not re.match(pattern, api_key):
-        return False
-    
     return True
 
 import time
