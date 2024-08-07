@@ -20,11 +20,11 @@ def is_valid_api_key(api_key: str) -> bool:
         return False
     if "%" in api_key:
         return False
-    # Check for invalid consecutive hyphens not at the start or end
+    # Check for invalid consecutive hyphens
     if re.search(r'[^-]--[^-]', api_key):
         return False
     # Check for valid pattern allowing double hyphens in specific segments
-    pattern = re.compile(r'^sk(-[a-zA-Z0-9_]+)+(-[a-zA-Z0-9_]+)*$')
+    pattern = re.compile(r'^sk(-[a-zA-Z0-9]+)+(-[a-zA-Z0-9]+)*$')
     return bool(pattern.match(api_key))
 
 def test_is_valid_api_key():
