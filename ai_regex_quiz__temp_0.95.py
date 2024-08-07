@@ -1,5 +1,5 @@
 # filename:ai_regex_quiz__temp_0.95.py
-# Fixed: Improved overall regex handling for better clarity and accuracy.
+# Fixed: Comprehensive validation logic for handling double hyphens and specific patterns.
 
 """
 Function to validate API key based on specific criteria.
@@ -15,26 +15,26 @@ Validation requirements:
 import re
 
 def is_valid_api_key(api_key):
+    # Ensure it's a string and meets the minimum length
     if not isinstance(api_key, str) or len(api_key) < 30:
         return False
+    
+    # Ensure it starts with `sk-`
     if not api_key.startswith("sk-"):
         return False
+    
+    # Check if there are invalid characters
     if re.search(r'[^a-zA-Z0-9\-_]', api_key):
         return False
     
-    # Valid patterns:
-    valid_patterns = [
-        r"^sk-[a-zA-Z0-9-_]+$",  # Standard single part
-        r"^sk--[a-zA-Z0-9-_]+$",  # Double hyphen after "sk-"
-        r"^sk-[a-zA-Z0-9-_]*-gen-[a-zA-Z0-9-_]*$",  # "-gen-" within the string
-        r"^sk-[a-zA-Z0-9-_]*-gen--[a-zA-Z0-9-_]*$",  # "-gen--" within the string
-    ]
+    # Allowable patterns:
+    # 1. sk-[valid_chars]
+    # 2. sk--[valid_chars] (double hyphen after sk-)
+    # 3. sk-[valid_chars]-gen-[valid_chars]
+    # 4. sk-[valid_chars]-gen--[valid_chars] (double hyphen within -gen-)
+    pattern = re.compile(r'^(sk-[a-zA-Z0-9\-_]+|sk--[a-zA-Z0-9\-_]+|sk-[a-zA-Z0-9\-_]*-gen-[a-zA-Z0-9\-_]*|sk-[a-zA-Z0-9\-_]*-gen--[a-zA-Z0-9\-_]*)$')
 
-    # Check if any pattern matches
-    if any(re.match(pattern, api_key) for pattern in valid_patterns):
-        return True
-    
-    return False
+    return bool(pattern.match(api_key))
 
 import time
 
