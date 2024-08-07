@@ -24,7 +24,7 @@ def is_valid_api_key(api_key: str) -> bool:
     if re.search(r'[^-]--[^-]', api_key):
         return False
     # Check for valid pattern
-    pattern = re.compile(r'^sk(-[a-zA-Z0-9_]+)+(-[a-zA-Z0-9_]+)*$')
+    pattern = re.compile(r'^sk(-[a-zA-Z0-9_]+)*(-[a-zA-Z0-9_]+)*$')
     return bool(pattern.match(api_key))
 
 def test_is_valid_api_key():
