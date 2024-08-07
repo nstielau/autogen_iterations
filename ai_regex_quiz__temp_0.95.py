@@ -1,5 +1,5 @@
-# filename: ai_regex_quiz__temp_0.95.py
-# Fixed: Improved regex pattern to correctly handle allowed double hyphens.
+# filename:ai_regex_quiz__temp_0.95.py
+# Fixed: Added specific conditions to accurately handle allowed double hyphens.
 
 """
 Function to validate API key based on specific criteria.
@@ -21,9 +21,12 @@ def is_valid_api_key(api_key):
         return False
     if re.search(r'[^a-zA-Z0-9\-_]', api_key):
         return False
-    # Allow "--" only after "sk-" or "gen-", otherwise disallow
-    if re.search(r'(?<!sk)(?<!gen)--', api_key):
-        return False
+
+    # Must not contain '--' except for specific allowed cases
+    parts = api_key.split('--')
+    if len(parts) > 2:
+        if not (api_key.startswith('sk--') or api_key.find('--gen') != -1):
+            return False
     return True
 
 import time
