@@ -33,3 +33,12 @@ def test_is_valid_api_key():
     assert not is_valid_api_key("sk--aut0-gen-asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
     assert is_valid_api_key(MOCK_OPEN_AI_API_KEY)
 ```
+
+## Git History
+
+I modified the https://github.com/microsoft/autogen/blob/main/autogen/coding/local_commandline_code_executor.py file, so that it commits each iterative pass to git.
+
+Iterestingly, it s
+
+# Temperature
+
