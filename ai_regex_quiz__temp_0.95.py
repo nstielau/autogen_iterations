@@ -1,5 +1,5 @@
 # filename:ai_regex_quiz__temp_0.95.py
-# Fixed: Refined pattern matching logic and separated double hyphen handling for better clarity.
+# Fixed: Explicitly check placement of double hyphens and overall structure.
 
 """
 Function to validate API key based on specific criteria.
@@ -7,7 +7,7 @@ Function to validate API key based on specific criteria.
 Validation requirements:
 - The key must not be an empty string.
 - The key must start with "sk-" (case-sensitive).
-- The key must not have "--" consecutively, except after "sk-" and within "-gen-".
+- Double hyphens ("--") are only allowed after "sk-" and within "-gen-".
 - The key can contain alphanumeric characters, hyphens (-), and underscores (_).
 - The key must have a minimum length of 30 characters.
 """
@@ -19,26 +19,31 @@ def is_valid_api_key(api_key):
         return False
     if not api_key.startswith("sk-"):
         return False
+    
+    # General characters check
     if re.search(r'[^a-zA-Z0-9\-_]', api_key):
         return False
     
-    # Handle allowed double hyphens
-    if "--" in api_key:
-        if not (api_key.startswith("sk--") or "--gen-" in api_key):
-            return False
-
-    # Ensure correct positioning using regex
-    if api_key.startswith("sk--"):
-        if not re.match(r'^sk--[a-zA-Z0-9\-_]+$', api_key):
-            return False
-    elif "--gen-" in api_key:
-        # Split by the valid "--gen-" part and check each segment
-        parts = api_key.split("--gen-")
-        if len(parts) != 2 or not all(re.match(r'^[a-zA-Z0-9\-_]+$', part) for part in parts):
-            return False
-    else:
-        if "--" in api_key:  # Any other double hyphen not in allowed positions is invalid
-            return False
+    # Split by "--" and handle separately
+    parts = api_key.split('--')
+    
+    if len(parts) > 2:
+        return False
+    
+    for i, part in enumerate(parts):
+        if i == 0:
+            if not re.match(r'^sk-[a-zA-Z0-9\-_]*$', part):
+                return False
+        else:
+            if "-gen-" in part:
+                sub_parts = part.split('-gen-')
+                # Both sides of "-gen-" must be alphanumeric with valid chars
+                if not all(re.match(r'^[a-zA-Z0-9\-_]*$', sub_part) for sub_part in sub_parts):
+                    return False
+            else:
+                # Verify the entire part has only valid characters
+                if not re.match(r'^[a-zA-Z0-9\-_]*$', part):
+                    return False
     
     return True
 
