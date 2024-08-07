@@ -38,7 +38,11 @@ def test_is_valid_api_key():
 
 I modified the https://github.com/microsoft/autogen/blob/main/autogen/coding/local_commandline_code_executor.py file, so that it commits each iterative pass to git.
 
-Iterestingly, it s
+You can check out the iterations at 
+
+* https://github.githistory.xyz/nstielau/autogen_iterations/blob/main/ai_regex_quiz__temp_0.95.py
+* https://github.githistory.xyz/nstielau/autogen_iterations/blob/main/ai_regex_quiz__temp_0.py
+
 
 # Temperature
 
