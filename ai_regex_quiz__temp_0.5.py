@@ -1,5 +1,5 @@
 # filename: ai_regex_quiz__temp_0.5.py
-# Initial implementation of is_valid_api_key function based on provided assertions.
+# Updated the regular expression to allow underscores and hyphens within the alphanumeric segments of the API key.
 import re
 
 def is_valid_api_key(api_key: str) -> bool:
@@ -24,7 +24,7 @@ def is_valid_api_key(api_key: str) -> bool:
     if re.search(r'--', api_key):
         return False
     # Check for valid pattern
-    pattern = re.compile(r'^sk(-[a-zA-Z0-9]+)+$')
+    pattern = re.compile(r'^sk(-[a-zA-Z0-9_]+)+$')
     return bool(pattern.match(api_key))
 
 def test_is_valid_api_key():
