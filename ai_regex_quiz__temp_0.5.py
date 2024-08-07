@@ -1,5 +1,5 @@
 # filename: ai_regex_quiz__temp_0.5.py
-
+# Refined the approach to validate API keys accurately.
 import re
 
 def is_valid_api_key(api_key: str) -> bool:
