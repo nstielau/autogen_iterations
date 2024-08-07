@@ -1,5 +1,5 @@
 # filename:email_regex_solver.py
-# Added a check for the presence of the '@' symbol before splitting the email.
+# Updated TLD length in regex pattern to range between 2-6 characters.
 
 import re
 import unittest
@@ -15,7 +15,7 @@ def is_valid_email(email):
     6. No consecutive periods in the domain.
     7. No periods or hyphens at the beginning or end of domain or subdomain parts.
     8. Should not allow underscores or any other invalid characters in the domain or subdomain.
-    9. Should not allow top-level domains (TLDs) that are less than two characters or unusually long (more than 10 characters).
+    9. Should not allow top-level domains (TLDs) that are less than two characters or unusually long (more than 6 characters).
     
     Args:
         email (str): The email address to validate.
@@ -27,7 +27,7 @@ def is_valid_email(email):
         return False
 
     email_regex = re.compile(
-        r'^(?!.*\.\.)(?!.*\.$)[\w\-.+]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,10}$',
+        r'^(?!.*\.\.)(?!.*\.$)[\w\-.+]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,6}$',
         re.IGNORECASE
     )
     
