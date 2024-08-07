@@ -1,5 +1,5 @@
 # filename:ai_regex_quiz__temp_0.95.py
-# Fixed: Added precise context checks for allowed double hyphens.
+# Fixed: Refined logic to handle specific double hyphen contexts with a simpler approach.
 
 """
 Function to validate API key based on specific criteria.
@@ -21,20 +21,17 @@ def is_valid_api_key(api_key):
         return False
     if re.search(r'[^a-zA-Z0-9\-_]', api_key):
         return False
-
-    if '--' in api_key:
-        if api_key.startswith("sk--"):
-            return re.match(r'^sk--[a-zA-Z0-9\-_]+$', api_key) is not None
-
-        # Handle -- within -gen-
-        if re.search(r'--gen-', api_key):
-            return re.match(r'^sk-[a-zA-Z0-9\-_]*-gen--[a-zA-Z0-9\-_]+$', api_key) is not None
-
-        # General case invalid if -- is not in above contexts
-        return False
-
-    # General valid pattern without --
-    return re.match(r'^sk-[a-zA-Z0-9\-_]*$', api_key) is not None
+    
+    # Valid patterns:
+    valid_patterns = [
+        r"^sk-[a-zA-Z0-9-_]+$",  # Standard single part
+        r"^sk--[a-zA-Z0-9-_]+$",  # Double hyphen directly after sk-
+        r"^sk-[a-zA-Z0-9-_]*-gen-[a-zA-Z0-9-_]*$",  # -gen- within the string
+        r"^sk-[a-zA-Z0-9-_]*-gen--[a-zA-Z0-9-_]*$",  # -gen-- within the string
+    ]
+    
+    # Check if any pattern matches
+    return any(re.match(pattern, api_key) for pattern in valid_patterns)
 
 import time
 
