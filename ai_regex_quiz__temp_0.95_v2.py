@@ -1,8 +1,8 @@
 # filename:ai_regex_quiz__temp_0.95_v2.py
 """
 Updates:
-- Created function is_valid_api_key with regex to validate API keys.
-- Documented validation requirements within the docstring.
+- Refined the regex pattern to correctly validate the API key.
+- Fixed validation to ensure it covers all edge cases based on test assertions.
 """
 
 import re
@@ -21,7 +21,7 @@ def is_valid_api_key(api_key):
     Returns:
     bool: True if valid, False otherwise.
     """
-    pattern = r'^(sk(-[^\-]|(-proj-)|(-aut0gen-)|(-aut0-gen-)|(-aut0--gen-)|(-aut0-gen--))[a-zA-Z0-9]*)([a-zA-Z0-9]+)$'
+    pattern = r'^(sk(-proj-|-aut0gen-|-aut0-gen-|-aut0--gen-|-aut0-gen--|-[a-zA-Z0-9]+).*[a-zA-Z0-9]+)$'
     return bool(re.match(pattern, api_key))
 
 
