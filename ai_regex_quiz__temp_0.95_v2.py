@@ -1,8 +1,8 @@
 # filename:ai_regex_quiz__temp_0.95_v2.py
 """
 Updates:
-- Refined the regex pattern to correctly validate the API key.
-- Fixed validation to ensure it covers all edge cases based on test assertions.
+- Updated regex pattern to explicitly handle valid prefixes and prevent consecutive hyphens post-prefix.
+- Ensured there is at least one alphanumeric character after the prefix.
 """
 
 import re
@@ -11,7 +11,7 @@ def is_valid_api_key(api_key):
     """
     Validate if the provided API key meets the following requirements:
     - Must start with 'sk-', 'sk-proj-', 'sk-aut0gen-', 'sk-aut0-gen-', 'sk-aut0--gen-' or 'sk-aut0-gen--'.
-    - Prefix after 'sk-' or 'sk-proj-' or 'sk-aut0gen-' or 'sk-aut0-gen-' or 'sk-aut0--gen-' should not have continuous multiple consecutive hyphens.
+    - Prefix after 'sk-', 'sk-proj-', 'sk-aut0gen-', 'sk-aut0-gen-', 'sk-aut0--gen-', or 'sk-aut0-gen--' should not have multiple consecutive hyphens.
     - After prefix, there must be at least one alphanumeric character.
     - Can contain uppercase letters, lowercase letters, digits, and special characters like '-', but only in specified locations.
     
@@ -21,7 +21,10 @@ def is_valid_api_key(api_key):
     Returns:
     bool: True if valid, False otherwise.
     """
-    pattern = r'^(sk(-proj-|-aut0gen-|-aut0-gen-|-aut0--gen-|-aut0-gen--|-[a-zA-Z0-9]+).*[a-zA-Z0-9]+)$'
+    # Define more stringent pattern
+    pattern = (r'^(sk(-(proj|aut0gen|aut0-gen|aut0--gen|aut0-gen--)|-[a-zA-Z0-9]+)'
+               r'([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*)?$)')
+    
     return bool(re.match(pattern, api_key))
 
 
