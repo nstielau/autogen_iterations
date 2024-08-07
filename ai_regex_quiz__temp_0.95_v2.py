@@ -1,8 +1,8 @@
 # filename:ai_regex_quiz__temp_0.95_v2.py
 """
 Updates:
-- Reconstructed regex to handle specific requirements and ensure accurate validation for valid API key formats.
-- Detailed regex to cover all edge cases and prevent invalid sequences.
+- Enhanced regex pattern to handle comprehensive validation for the API key.
+- Explicitly manage valid prefixes and required alphanumeric characters.
 """
 
 import re
@@ -12,8 +12,7 @@ def is_valid_api_key(api_key):
     Validate if the provided API key meets the following requirements:
     - Must start with 'sk-', 'sk-proj-', 'sk-aut0gen-', 'sk-aut0-gen-', 'sk-aut0--gen-', or 'sk-aut0-gen--'.
     - After the prefix, there must be at least one alphanumeric character.
-    - No consecutive hyphens other than those specified in the prefix.
-    - Can contain uppercase letters, lowercase letters, digits, and valid hyphens, but only in specified sequences.
+    - No invalid sequences such as consecutive hyphens outside the specified prefixes.
     
     Args:
     api_key (str): The API key string to validate.
@@ -22,8 +21,9 @@ def is_valid_api_key(api_key):
     bool: True if valid, False otherwise.
     """
     pattern = (
-        r'^(sk-(proj|aut0gen|aut0-gen|aut0--gen|aut0-gen--|[a-zA-Z0-9])'  # Valid specified prefixes
-        r'([-a-zA-Z0-9]*[a-zA-Z0-9]))$'  # Ensure valid structure after prefix
+        r'^(sk-'                    # Start with 'sk-'
+        r'(proj|aut0gen|aut0-gen|aut0--gen|aut0-gen--|[a-zA-Z0-9]+)-'  # Valid prefixes
+        r'[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$)'                              # Ensure valid structure after prefix
     )
     return bool(re.match(pattern, api_key))
 
@@ -48,7 +48,7 @@ def test_is_valid_api_key():
     assert is_valid_api_key("sk-aut0-gen--asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
     assert not is_valid_api_key("sk-aut0-gen--asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
     assert not is_valid_api_key("sk--aut0-gen-asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
-
+    
 print("Testing the function...")
 test_is_valid_api_key()
 print("All tests passed.")
