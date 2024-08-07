@@ -1,7 +1,7 @@
 # filename:ai_regex_quiz__temp_0.95_v2.py
 """
 Updates:
-- Enhanced regex pattern to ensure valid prefixes and correct non-prefix sequences.
+- Refined regex pattern to handle valid prefixes and ensure the correct structure after the prefix.
 """
 
 import re
@@ -19,27 +19,18 @@ def is_valid_api_key(api_key):
     Returns:
     bool: True if valid, False otherwise.
     """
-    
-    # Define valid prefixes
-    valid_prefixes = [
-        'sk-', 'sk-proj-', 'sk-aut0gen-', 'sk-aut0-gen-', 'sk-aut0--gen-', 'sk-aut0-gen--'
-    ]
-    
-    # Check if the api_key starts with any valid prefix, and strip it off for further validation
-    for prefix in valid_prefixes:
-        if api_key.startswith(prefix):
-            post_prefix = api_key[len(prefix):]
-            # Validate the remaining part of the api_key (must contain alphanumeric, hyphen allowed as separator)
-            if re.match(r'^([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*)$', post_prefix):
-                return True
-            break
-    
-    return False
+    pattern = re.compile(
+        r'^(sk-('
+        r'proj|aut0gen|aut0-gen|aut0--gen|aut0-gen--'
+        r'|[a-zA-Z0-9]+))-([a-zA-Z0-9]+-?)*$'
+    )
+    return bool(pattern.match(api_key))
 
 
 def test_is_valid_api_key():
     import time
     time.sleep(2)
+    
     # Invalid cases
     assert not is_valid_api_key("")
     assert not is_valid_api_key("sk-")
