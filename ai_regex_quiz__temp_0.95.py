@@ -1,5 +1,5 @@
 # filename:ai_regex_quiz__temp_0.95.py
-# Fixed: Refined and explicitly validated contexts of allowed double hyphens.
+# Fixed: Improved context-based splitting and validation for double hyphens.
 
 """
 Function to validate API key based on specific criteria.
@@ -15,6 +15,7 @@ Validation requirements:
 import re
 
 def is_valid_api_key(api_key):
+    # Early checks
     if not isinstance(api_key, str) or len(api_key) < 30:
         return False
     if not api_key.startswith("sk-"):
@@ -22,23 +23,26 @@ def is_valid_api_key(api_key):
     if re.search(r'[^a-zA-Z0-9\-_]', api_key):
         return False
 
-    # Check allowed patterns explicitly
+    # Validate the specific context of double hyphens
     if '--' in api_key:
         parts = api_key.split('--')
-        if len(parts) > 2:
+        if len(parts) > 2:  # More than one `--` is not allowed
             return False
+        if not api_key.startswith("sk--") and '--gen-' not in api_key:
+            return False
+        
+        # Validate each split part
+        if api_key.startswith("sk--"):
+            if not re.match(r'^sk--[a-zA-Z0-9\-_]+$', api_key):
+                return False
+        elif '--gen-' in api_key:
+            main_part, after_gen = api_key.split('--gen-', 1)
+            if not (re.match(r'^sk-[a-zA-Z0-9\-_]*-gen-', main_part) and re.match(r'[a-zA-Z0-9\-_]+$', after_gen)):
+                return False
 
-        for i, part in enumerate(parts):
-            if i == 0:
-                if not re.match(r'^sk-[a-zA-Z0-9\-_]*$', part):
-                    return False
-            else:
-                if not (re.match(r'^[a-zA-Z0-9\-_]*$', part) and 
-                        (api_key.startswith("sk--") or '-gen-' in part)):
-                    return False
-    else:
-        if not re.match(r'^sk-[a-zA-Z0-9\-_]*$', api_key):
-            return False
+    # No double hyphen, standard regex check
+    if '--' not in api_key and not re.match(r'^sk-[a-zA-Z0-9\-_]*$', api_key):
+        return False
 
     return True
 
