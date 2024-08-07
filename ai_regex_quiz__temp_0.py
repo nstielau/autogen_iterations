@@ -1,8 +1,10 @@
 # filename:ai_regex_quiz__temp_0.py
+# Updated to allow underscores in the API key
+
 """
 This function validates an API key based on the following rules:
 1. The key must start with "sk-".
-2. The key can contain alphanumeric characters and hyphens.
+2. The key can contain alphanumeric characters, hyphens, and underscores.
 3. The key should not contain consecutive hyphens.
 4. The key should not end with a hyphen.
 5. The key should be of a certain length (not too short).
@@ -27,8 +29,8 @@ def is_valid_api_key(api_key):
     if len(api_key) < 20:
         return False
     
-    # Check if the key contains only valid characters (alphanumeric and hyphens)
-    if not re.match(r'^sk-[a-zA-Z0-9-]+$', api_key):
+    # Check if the key contains only valid characters (alphanumeric, hyphens, and underscores)
+    if not re.match(r'^sk-[a-zA-Z0-9-_]+$', api_key):
         return False
     
     return True
