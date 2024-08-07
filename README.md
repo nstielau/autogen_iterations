@@ -10,32 +10,48 @@ So I tried to get autogen to fix autogen!
 Here is the prompt given to the assistant:
 
 ```
-Write a python function called is_valid_api_key that passes the following assertions.
+Write a python function called is_valid_api_key that passes the following unit tests.
 The docstring of the function should identify all of the validation requirements.
 Take your time, aim for correctness over speed.
-The first line of every python file you generate should be "# filename:ai_regex_quiz__temp_0.5.py".
+The first line of every python file you generate should be "# filename:email_regex.py".
 When you make a new iteration, summarize specifically what changed and why in a comment on the second line.
 
-def test_is_valid_api_key():
-    time.sleep(2)
-    assert not is_valid_api_key("")
-    assert not is_valid_api_key("sk-")
-    assert not is_valid_api_key("SK-")
-    assert not is_valid_api_key("sk-asajsdjsd2")
-    assert not is_valid_api_key("FooBar")
-    assert not is_valid_api_key("sk-asajsdjsd22372%23kjdfdfdf2329ffUUDSDS")
-    assert is_valid_api_key("sk-asajsdjsd22372X23kjdfdfdf2329ffUUDSDS")
-    assert is_valid_api_key("sk-asajsdjsd22372X23kjdfdfdf2329ffUUDSDS1212121221212sssXX")
-    assert is_valid_api_key("sk-proj-asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
-    assert is_valid_api_key("sk-proj-asajsdjsd22372X23kjdfdfdf2329f212_gsirb23Yu7vv4vD4-B2iQkbC")
-    assert is_valid_api_key("sk-0-asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
-    assert is_valid_api_key("sk-aut0gen-asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
-    assert is_valid_api_key("sk-aut0-gen-asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
-    assert is_valid_api_key("sk-aut0--gen-asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
-    assert is_valid_api_key("sk-aut0-gen--asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
-    assert not is_valid_api_key("sk-aut0-gen--asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
-    assert not is_valid_api_key("sk--aut0-gen-asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
-    assert is_valid_api_key(MOCK_OPEN_AI_API_KEY)
+import unittest
+
+class TestEmailValidation(unittest.TestCase):
+    
+    def test_valid_emails(self):
+        self.assertTrue(is_valid_email("example@example.com"))
+        self.assertTrue(is_valid_email("user.name+tag+sorting@example.com"))
+        self.assertTrue(is_valid_email("user_name@example.co.uk"))
+        self.assertTrue(is_valid_email("user-name@example.org"))
+        self.assertTrue(is_valid_email("user@subdomain.example.com"))
+    
+    def test_invalid_emails(self):
+        self.assertFalse(is_valid_email("plainaddress"))
+        self.assertFalse(is_valid_email("@missingusername.com"))
+        self.assertFalse(is_valid_email("username@.com"))
+        self.assertFalse(is_valid_email("username@.com."))
+        self.assertFalse(is_valid_email("username@..com"))
+        self.assertFalse(is_valid_email("username@com"))
+        self.assertFalse(is_valid_email("username@.com.com"))
+        self.assertFalse(is_valid_email("username@-example.com"))
+        self.assertFalse(is_valid_email("username@.example.com"))
+        self.assertFalse(is_valid_email("username@exa_mple.com"))
+        self.assertFalse(is_valid_email("username@exam!ple.com"))
+        self.assertFalse(is_valid_email("username@example..com"))
+        self.assertFalse(is_valid_email("username@example.c"))
+        self.assertFalse(is_valid_email("username@.com"))
+        self.assertFalse(is_valid_email("username@-.com"))
+        self.assertFalse(is_valid_email("user@domain_with_underscore.com"))
+
+    def test_edge_cases(self):
+        self.assertTrue(is_valid_email("user@example.museum"))
+        self.assertTrue(is_valid_email("user@example.travel"))
+        self.assertTrue(is_valid_email("user@example.jobs"))
+        self.assertFalse(is_valid_email("username@."))
+        self.assertFalse(is_valid_email("username@.com.com."))
+        self.assertFalse(is_valid_email("username@example.corporate"))
 ```
 
 ## Git History

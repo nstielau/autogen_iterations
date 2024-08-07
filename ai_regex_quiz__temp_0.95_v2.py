@@ -1,7 +1,8 @@
 # filename:ai_regex_quiz__temp_0.95_v2.py
 """
 Updates:
-- Refined regex pattern to handle valid prefixes and ensure the correct structure after the prefix.
+- Created function is_valid_api_key with regex to validate API keys.
+- Documented validation requirements within the docstring.
 """
 
 import re
@@ -9,9 +10,10 @@ import re
 def is_valid_api_key(api_key):
     """
     Validate if the provided API key meets the following requirements:
-    - Must start with 'sk-', 'sk-proj-', 'sk-aut0gen-', 'sk-aut0-gen-', 'sk-aut0--gen-', or 'sk-aut0-gen--'.
-    - After the prefix, there must be at least one alphanumeric character.
-    - Can contain uppercase letters, lowercase letters, digits, and hyphens, but no invalid consecutive hyphens or character sequences.
+    - Must start with 'sk-', 'sk-proj-', 'sk-aut0gen-', 'sk-aut0-gen-', 'sk-aut0--gen-' or 'sk-aut0-gen--'.
+    - Prefix after 'sk-' or 'sk-proj-' or 'sk-aut0gen-' or 'sk-aut0-gen-' or 'sk-aut0--gen-' should not have continuous multiple consecutive hyphens.
+    - After prefix, there must be at least one alphanumeric character.
+    - Can contain uppercase letters, lowercase letters, digits, and special characters like '-', but only in specified locations.
     
     Args:
     api_key (str): The API key string to validate.
@@ -19,29 +21,19 @@ def is_valid_api_key(api_key):
     Returns:
     bool: True if valid, False otherwise.
     """
-    pattern = re.compile(
-        r'^(sk-('
-        r'proj|aut0gen|aut0-gen|aut0--gen|aut0-gen--'
-        r'|[a-zA-Z0-9]+))-([a-zA-Z0-9]+-?)*$'
-    )
-    return bool(pattern.match(api_key))
+    pattern = r'^(sk(-[^\-]|(-proj-)|(-aut0gen-)|(-aut0-gen-)|(-aut0--gen-)|(-aut0-gen--))[a-zA-Z0-9]*)([a-zA-Z0-9]+)$'
+    return bool(re.match(pattern, api_key))
 
 
 def test_is_valid_api_key():
     import time
     time.sleep(2)
-    
-    # Invalid cases
     assert not is_valid_api_key("")
     assert not is_valid_api_key("sk-")
     assert not is_valid_api_key("SK-")
     assert not is_valid_api_key("sk-asajsdjsd2")
     assert not is_valid_api_key("FooBar")
     assert not is_valid_api_key("sk-asajsdjsd22372%23kjdfdfdf2329ffUUDSDS")
-    assert not is_valid_api_key("sk-aut0-gen--asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
-    assert not is_valid_api_key("sk--aut0-gen-asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
-
-    # Valid cases
     assert is_valid_api_key("sk-asajsdjsd22372X23kjdfdfdf2329ffUUDSDS")
     assert is_valid_api_key("sk-asajsdjsd22372X23kjdfdfdf2329ffUUDSDS1212121221212sssXX")
     assert is_valid_api_key("sk-proj-asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
@@ -51,6 +43,8 @@ def test_is_valid_api_key():
     assert is_valid_api_key("sk-aut0-gen-asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
     assert is_valid_api_key("sk-aut0--gen-asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
     assert is_valid_api_key("sk-aut0-gen--asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
+    assert not is_valid_api_key("sk-aut0-gen--asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
+    assert not is_valid_api_key("sk--aut0-gen-asajsdjsd22372X23kjdfdfdf2329ffUUDSDS12121212212")
 
 print("Testing the function...")
 test_is_valid_api_key()
