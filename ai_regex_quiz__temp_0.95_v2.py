@@ -1,8 +1,7 @@
 # filename:ai_regex_quiz__temp_0.95_v2.py
 """
 Updates:
-- Refined regex pattern to more effectively validate the prefixes and ensure the presence of alphanumeric characters.
-- Explicitly ensure no invalid character sequences and properly structure validation for all edge cases.
+- Further refined regex to handle edge cases and strict validation for specific prefix rules and character requirements.
 """
 
 import re
@@ -11,9 +10,9 @@ def is_valid_api_key(api_key):
     """
     Validate if the provided API key meets the following requirements:
     - Must start with 'sk-', 'sk-proj-', 'sk-aut0gen-', 'sk-aut0-gen-', 'sk-aut0--gen-' or 'sk-aut0-gen--'.
-    - Prefix after 'sk-', 'sk-proj-', 'sk-aut0gen-', 'sk-aut0-gen-', 'sk-aut0--gen-', or 'sk-aut0-gen--' should not have multiple consecutive hyphens (except for specified patterns).
+    - Prefix after 'sk-', 'sk-proj-', 'sk-aut0gen-', 'sk-aut0-gen-', 'sk-aut0--gen-', or 'sk-aut0-gen--' should not have multiple consecutive hyphens or invalid characters.
     - After prefix, there must be at least one alphanumeric character.
-    - Can contain uppercase letters, lowercase letters, digits, and special characters like '-', but only in specified locations.
+    - Can contain uppercase letters, lowercase letters, digits, and valid hyphens, but only in specified sequences.
     
     Args:
     api_key (str): The API key string to validate.
@@ -22,9 +21,9 @@ def is_valid_api_key(api_key):
     bool: True if valid, False otherwise.
     """
     pattern = (
-        r'^(sk-)'  # Start with sk-
-        r'(proj|aut0gen|aut0-gen|aut0--gen|aut0-gen--|[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*)'  # Valid prefixes
-        r'([a-zA-Z0-9]+)$'  # Must end with alphanumeric character
+        r'^sk-'                                      # Start with 'sk-'
+        r'((proj|aut0gen|aut0-gen|aut0--gen|aut0-gen--)-?)'  # Accept valid sub-patterns
+        r'([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*)$'          # Ensure at least one alphanumeric character after the prefix and valid placement of hyphens
     )
     return bool(re.match(pattern, api_key))
 
