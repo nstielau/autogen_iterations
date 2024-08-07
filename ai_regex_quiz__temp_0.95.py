@@ -1,5 +1,5 @@
 # filename:ai_regex_quiz__temp_0.95.py
-# Fixed: Explicitly check placement of double hyphens and overall structure.
+# Fixed: Improved overall regex handling for better clarity and accuracy.
 
 """
 Function to validate API key based on specific criteria.
@@ -19,33 +19,22 @@ def is_valid_api_key(api_key):
         return False
     if not api_key.startswith("sk-"):
         return False
-    
-    # General characters check
     if re.search(r'[^a-zA-Z0-9\-_]', api_key):
         return False
     
-    # Split by "--" and handle separately
-    parts = api_key.split('--')
+    # Valid patterns:
+    valid_patterns = [
+        r"^sk-[a-zA-Z0-9-_]+$",  # Standard single part
+        r"^sk--[a-zA-Z0-9-_]+$",  # Double hyphen after "sk-"
+        r"^sk-[a-zA-Z0-9-_]*-gen-[a-zA-Z0-9-_]*$",  # "-gen-" within the string
+        r"^sk-[a-zA-Z0-9-_]*-gen--[a-zA-Z0-9-_]*$",  # "-gen--" within the string
+    ]
+
+    # Check if any pattern matches
+    if any(re.match(pattern, api_key) for pattern in valid_patterns):
+        return True
     
-    if len(parts) > 2:
-        return False
-    
-    for i, part in enumerate(parts):
-        if i == 0:
-            if not re.match(r'^sk-[a-zA-Z0-9\-_]*$', part):
-                return False
-        else:
-            if "-gen-" in part:
-                sub_parts = part.split('-gen-')
-                # Both sides of "-gen-" must be alphanumeric with valid chars
-                if not all(re.match(r'^[a-zA-Z0-9\-_]*$', sub_part) for sub_part in sub_parts):
-                    return False
-            else:
-                # Verify the entire part has only valid characters
-                if not re.match(r'^[a-zA-Z0-9\-_]*$', part):
-                    return False
-    
-    return True
+    return False
 
 import time
 
