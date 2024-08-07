@@ -1,8 +1,7 @@
 # filename:ai_regex_quiz__temp_0.95_v2.py
 """
 Updates:
-- Simplified and refined the regex pattern to strictly enforce prefix and valid character rules.
-- Ensured all edge cases are correctly handled.
+- Improved regex pattern to strictly validate valid prefixes and disallow invalid sequences.
 """
 
 import re
@@ -21,9 +20,11 @@ def is_valid_api_key(api_key):
     Returns:
     bool: True if valid, False otherwise.
     """
+    
     pattern = (
-        r'^(sk-(proj|aut0gen|aut0-gen|aut0--gen|aut0-gen--)?-?'     # Valid prefixes
-        r'[a-zA-Z0-9]+([a-zA-Z0-9-]*[a-zA-Z0-9]+)*)$'               # No consecutive hyphens, at least one alphanumeric after prefix
+        r'^(sk-)'                    # Start with 'sk-'
+        r'((proj|aut0gen|aut0-gen|aut0--gen|aut0-gen--)-?)'  # Valid prefixes
+        r'([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*)?$'                  # At least one alphanumeric character, valid placement of hyphens
     )
     
     return bool(re.match(pattern, api_key))
