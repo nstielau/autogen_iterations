@@ -1,6 +1,10 @@
 # autogen_iterations
 A repo of iterative attempts by autogen agents to solve a problem.
 
+Specifically, there is a bug in autogen that was emitting a warning with a valid API key.
+
+So I tried to get autogen to fix autogen!
+
 ## Prompt
 
 Here is the prompt given to the assistant:
@@ -44,9 +48,12 @@ You can check out the iterations at
 * https://github.githistory.xyz/nstielau/autogen_iterations/blob/main/ai_regex_quiz__temp_0.py
 
 
-# Temperature
+## Temperature
 
-Temperature was set a 0, and it was struggling to come up with a solution.  When I bumped the temperature to 0.95, it came up with a solution on the first iteration.
+Temperature was set a 0, and it was struggling to come up with a solution.
 
 After that, I created temperature-specific files, using the git history as the log.  However, subsequent testing did not show as direct an impact of temperature.
 
+## Result
+
+Sadly, it never got an accurate result that I could commit to autogen. 
