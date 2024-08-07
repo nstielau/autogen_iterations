@@ -1,5 +1,5 @@
 # filename:ai_regex_quiz__temp_0.95.py
-# Fixed: Improved handling for double hyphens with exact pattern matching.
+# Fixed: Improved regex pattern to validate double hyphen positions accurately.
 
 """
 Function to validate API key based on specific criteria.
@@ -7,7 +7,7 @@ Function to validate API key based on specific criteria.
 Validation requirements:
 - The key must not be an empty string.
 - The key must start with "sk-" (case-sensitive).
-- The key must not have "--" consecutively, except after "sk-" and "-gen-".
+- The key must not have "--" consecutively, except after "sk-" and within "-gen-".
 - The key can contain alphanumeric characters, hyphens (-), and underscores (_).
 - The key must have a minimum length of 30 characters.
 """
@@ -22,10 +22,11 @@ def is_valid_api_key(api_key):
     if re.search(r'[^a-zA-Z0-9\-_]', api_key):
         return False
     
-    # Handle double hyphens "--"
-    if '--' in api_key:
-        if not api_key.startswith("sk--") and "--gen-" not in api_key:
-            return False
+    # Define regex pattern
+    pattern = r'^sk-[a-zA-Z0-9-_]*(?<!-)\-\-(?<!gen)[a-zA-Z0-9-_]*$|^sk-[a-zA-Z0-9-_]*$'
+
+    if not re.match(pattern, api_key):
+        return False
     
     return True
 
